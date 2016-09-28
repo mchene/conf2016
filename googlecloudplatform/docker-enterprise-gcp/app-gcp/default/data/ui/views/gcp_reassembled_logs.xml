@@ -1,0 +1,56 @@
+<form>
+  <label>Reassembled Logs</label>
+  <fieldset submitButton="false">
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Log (not including kubelet)</title>
+      <input type="dropdown" token="log" searchWhenChanged="true">
+        <label>Log Types</label>
+        <choice value="*">All</choice>
+        <search>
+          <query>sourcetype="google:pubsub" log!="kubelet" | dedup log | table log</query>
+        </search>
+        <fieldForLabel>log</fieldForLabel>
+        <fieldForValue>log</fieldForValue>
+        <default>*</default>
+      </input>
+      <table>
+        <search>
+          <query>sourcetype="google:pubsub" log=$log$ | transaction log maxevents=15  maxspan=5s | table _time log, textPayload</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Log: Kubelet</title>
+        <search>
+          <query>sourcetype="google:pubsub" log=kubelet | transaction log maxevents=15 maxspan=5s | table _time,log,structPayload.message</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</form>

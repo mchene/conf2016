@@ -1,0 +1,8 @@
+<nav color="#65A637">
+  <view name="search" />
+  <view name="gcp_logoverview" default='true' />
+  <view name="gcp_cloudmonitor" />
+  <view name="gcp_auditing" />
+  <view name="gcp_reassembled_logs" />
+  <view name="dashboards" />
+</nav>
